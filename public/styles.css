@@ -31,17 +31,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 90vw; /* usar vw normales en lugar de svw */
-  gap: 0.5rem; /* más compacto */
+  width: 90vw;
+  gap: 0.5rem;
   background-color: white;
   border-radius: 3rem 3rem 0 0;
   padding: 1rem 1rem;
   margin-top: 1rem;
-  flex-wrap: wrap; /* permite que salten a otra línea si no entran */
+  flex-wrap: wrap;
 }
 
 .buttonCircle {
-  width: 64px; /* tamaño razonable */
+  width: 64px;
   height: 64px;
   border: none;
   border-radius: 50%;
@@ -69,11 +69,11 @@ a-scene {
   top: 0;
   left: 0;
   width: 100svw !important;
-  height: 100svw !important;
+  height: 100svh !important;
   z-index: 0;
 }
 
-/* El canvas que A-Frame crea internamente */
+/* Canvas interno de A-Frame */
 canvas.a-canvas {
   position: fixed !important;
   top: 0;
@@ -87,10 +87,10 @@ canvas.a-canvas {
 #savedImages {
   width: 100svw;
   height: 100svh;
-  position: fixed; /* opcional: para que flote sobre la escena */
+  position: fixed;
   left: 0;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 1000; /* encima de la escena AR */
+  z-index: 1000;
   display: none;
 }
 

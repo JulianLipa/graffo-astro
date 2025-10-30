@@ -13,9 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveButton = document.getElementById("saveButton");
   const closeButton = document.getElementById("buttonCloseSavedImg");
 
-  const backgroundColor = "rgba(0,255,0,0.4)";
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Fondo transparente
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   let isDrawing = false;
   let brushColor = document.getElementById("colorPicker").value;
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let strokes = [];
   let currentStroke = [];
 
-  // ===== Botones guardar/cerrar =====
+  // ===== Botones guardar / cerrar =====
   saveButton.addEventListener("click", () => {
     const dataURL = canvas.toDataURL("image/png");
     divControlsDrawing.style.display = "none";
@@ -35,11 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     previewImg.src = dataURL;
     savedContainer.style.display = "flex";
 
-    // Reiniciar canvas
+    // Limpiar canvas (transparente)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     strokes = [];
     currentStroke = [];
     lastPoint = null;
@@ -58,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   });
 
-  // ===== Controles UI =====
+  // ===== Controles de UI =====
   document.getElementById("colorPicker").addEventListener("input", (e) => {
     brushColor = e.target.value;
   });
@@ -67,13 +63,29 @@ document.addEventListener("DOMContentLoaded", () => {
     currentBrush = e.target.value;
   });
 
-  document.getElementById("drawButton").addEventListener("mousedown", () => isDrawing = true);
-  document.getElementById("drawButton").addEventListener("mouseup", () => { isDrawing = false; endStroke(); });
-  document.getElementById("drawButton").addEventListener("touchstart", (e) => { e.preventDefault(); isDrawing = true; });
-  document.getElementById("drawButton").addEventListener("touchend", (e) => { e.preventDefault(); isDrawing = false; endStroke(); });
+  document.getElementById("drawButton").addEventListener("mousedown", () => (isDrawing = true));
+  document.getElementById("drawButton").addEventListener("mouseup", () => {
+    isDrawing = false;
+    endStroke();
+  });
+  document.getElementById("drawButton").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    isDrawing = true;
+  });
+  document.getElementById("drawButton").addEventListener("touchend", (e) => {
+    e.preventDefault();
+    isDrawing = false;
+    endStroke();
+  });
 
-  document.getElementById("resetButton").addEventListener("click", () => { strokes = []; redrawCanvas(); });
-  document.getElementById("undoButton").addEventListener("click", () => { strokes.pop(); redrawCanvas(); });
+  document.getElementById("resetButton").addEventListener("click", () => {
+    strokes = [];
+    redrawCanvas();
+  });
+  document.getElementById("undoButton").addEventListener("click", () => {
+    strokes.pop();
+    redrawCanvas();
+  });
 
   function endStroke() {
     if (currentStroke.length > 0) {
@@ -85,15 +97,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function redrawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const scale = canvas.width / originalSize;
     for (const stroke of strokes) {
       for (let i = 1; i < stroke.length; i++) {
         const p1 = stroke[i - 1];
         const p2 = stroke[i];
-        applyBrush(ctx, { ...p1, x: p1.x * scale, y: p1.y * scale }, { ...p2, x: p2.x * scale, y: p2.y * scale }, p2.color, p2.brush);
+        applyBrush(
+          ctx,
+          { ...p1, x: p1.x * scale, y: p1.y * scale },
+          { ...p2, x: p2.x * scale, y: p2.y * scale },
+          p2.color,
+          p2.brush
+        );
       }
     }
 
@@ -121,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.restore();
         break;
 
-      case "default":
       default:
         ctx.strokeStyle = color;
         ctx.lineWidth = p2.size * 1.5;
@@ -153,11 +168,17 @@ document.addEventListener("DOMContentLoaded", () => {
     raycaster.set(camPos, camDir);
 
     const intersects = raycaster.intersectObject(planeMesh);
-    if (!intersects.length) { lastPoint = null; return; }
+    if (!intersects.length) {
+      lastPoint = null;
+      return;
+    }
 
     const uv = intersects[0].uv;
-    const x = uv.x * originalSize;
-    const y = (1 - uv.y) * originalSize;
+    if (!uv) return;
+
+    // ✅ Ajuste de alineación UV (ya corregido)
+    const x = (1 - uv.x) * originalSize;
+    const y = uv.y * originalSize;
 
     const markerPos = new THREE.Vector3();
     markerObj.getWorldPosition(markerPos);
@@ -172,10 +193,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (lastPoint) {
         const scale = canvas.width / originalSize;
-        applyBrush(ctx, { ...lastPoint, x: lastPoint.x * scale, y: lastPoint.y * scale }, { ...point, x: point.x * scale, y: point.y * scale }, brushColor, currentBrush);
+        applyBrush(
+          ctx,
+          { ...lastPoint, x: lastPoint.x * scale, y: lastPoint.y * scale },
+          { ...point, x: point.x * scale, y: point.y * scale },
+          brushColor,
+          currentBrush
+        );
       } else {
         ctx.beginPath();
-        if (currentBrush === "default") { ctx.shadowBlur = blur; ctx.shadowColor = brushColor; }
+        if (currentBrush === "default") {
+          ctx.shadowBlur = blur;
+          ctx.shadowColor = brushColor;
+        }
         const scale = canvas.width / originalSize;
         ctx.arc(x * scale, y * scale, size / 2, 0, Math.PI * 2);
         ctx.fill();
@@ -192,5 +222,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   animate();
-  console.log("JS cargado y canvas AR listo");
+  console.log("✅ JS cargado y canvas AR listo (transparente + raycaster alineado)");
 });
