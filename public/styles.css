@@ -1,0 +1,131 @@
+img {
+  width: 100%;
+  height: auto;
+}
+
+/* Fondo y estructura */
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100vh;
+  width: 100vw;
+  font-family: sans-serif;
+}
+
+#bottomSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+#controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90vw; /* usar vw normales en lugar de svw */
+  gap: 0.5rem; /* más compacto */
+  background-color: white;
+  border-radius: 3rem 3rem 0 0;
+  padding: 1rem 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap; /* permite que salten a otra línea si no entran */
+}
+
+.buttonCircle {
+  width: 64px; /* tamaño razonable */
+  height: 64px;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  background: #53ff56;
+  cursor: pointer;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+#colorPicker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#colorPicker::-webkit-color-swatch {
+  border-radius: 50%;
+}
+
+a-scene {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100svw !important;
+  height: 100svw !important;
+  z-index: 0;
+}
+
+/* El canvas que A-Frame crea internamente */
+canvas.a-canvas {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100svw !important;
+  height: 100svh !important;
+  object-fit: cover;
+  z-index: 0;
+}
+
+#savedImages {
+  width: 100svw;
+  height: 100svh;
+  position: fixed; /* opcional: para que flote sobre la escena */
+  left: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000; /* encima de la escena AR */
+  display: none;
+}
+
+#savedImages div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+  margin-top: 2em;
+  width: 100%;
+}
+
+#savedImages img {
+  position: static;
+}
+
+#savedPreview {
+  width: 90svw;
+}
+
+#bottomSaveControls {
+  position: fixed;
+  bottom: 0;
+  padding: 1em;
+}
+
+#bottomSectionDrawing {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#bottomSectionSaved {
+  display: none;
+}

@@ -1,0 +1,69 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Graffo.AR</title>
+
+    <!-- A-Frame + AR.js (inline para Astro) -->
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js" is:inline></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js" is:inline></script>
+
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+
+  <body>
+    <!-- Controles flotantes -->
+    <div id="savedImages">
+      <div id="bottomSectionSaved">
+        <img src="/hola.jpg" alt="" id="savedPreview">
+        <div id="bottomSaveControls">
+          <button id="buttonCloseSavedImg" class="buttonCircle">⏪</button>
+          <button id="" class="buttonCircle">📤</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="bottomSection">
+      <div id="bottomSectionDrawing">
+        <button id="drawButton" class="buttonCircle">🎨</button>
+
+        <div id="controls">
+          <button id="undoButton" class="buttonCircle">↩️</button>
+          <button id="resetButton" class="buttonCircle">🗑️</button>
+          <input type="color" id="colorPicker" class="buttonCircle" value="#000000">
+          <button id="saveButton" class="buttonCircle">💾</button>
+
+          <select id="brushSelector">
+            <option value="default" selected>Default</option>
+            <option value="fatcap">Fatcap</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas oculto que sirve como textura -->
+    <canvas id="drawingCanvas" width="2048" height="2048" style="display:none;"></canvas>
+
+    <!-- Escena AR -->
+    <a-scene embedded
+             arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false"
+             device-orientation-permission-ui="enabled: false">
+
+      <a-marker preset="hiro" id="marker">
+        <a-plane id="graffitiPlane" width="6" height="6" 
+                 material="shader: flat; src:#drawingCanvas;"
+                 rotation="-90 0 0">
+        </a-plane>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- Script de dibujo -->
+    <script type="module" src="/script.js" is:inline></script>
+  </body>
+</html>
